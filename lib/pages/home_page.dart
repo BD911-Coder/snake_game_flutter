@@ -1,6 +1,8 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:snake_game/widgets/blank_pixel.dart';
-import 'package:snake_game/widgets/play_button.dart';
 import 'package:snake_game/widgets/food_pixel.dart';
 import 'package:snake_game/widgets/snake_pixel.dart';
 
@@ -10,6 +12,8 @@ class HomePage extends StatefulWidget {
   @override
   State<HomePage> createState() => _HomePageState();
 }
+
+enum SnakeDirection { UP, DOWN, RIGHT, LEFT }
 
 class _HomePageState extends State<HomePage> {
   //grid builder
@@ -23,6 +27,10 @@ class _HomePageState extends State<HomePage> {
     2,
   ];
 
+  //initial snake direction
+
+  var currentDirection = SnakeDirection.RIGHT;
+
   //food
 
   int foodPosition = 55;
@@ -30,7 +38,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       body: Column(
         //high scores
         children: [
@@ -41,7 +48,25 @@ class _HomePageState extends State<HomePage> {
           ),
           Expanded(
             flex: 3,
-            child: Container(
+            child: GestureDetector(
+              onVerticalDragUpdate: (details) {
+                if (details.delta.dy > 0 &&
+                    currentDirection != SnakeDirection.UP) {
+                  currentDirection = SnakeDirection.DOWN;
+                } else if (details.delta.dy < 0 &&
+                    currentDirection != SnakeDirection.DOWN) {
+                  currentDirection = SnakeDirection.UP;
+                }
+              },
+              onHorizontalDragUpdate: (details) {
+                if (details.delta.dx > 0 &&
+                    currentDirection != SnakeDirection.LEFT) {
+                  currentDirection = SnakeDirection.RIGHT;
+                } else if (details.delta.dx < 0 &&
+                    currentDirection != SnakeDirection.RIGHT) {
+                  currentDirection = SnakeDirection.LEFT;
+                }
+              },
               child: GridView.builder(
                   itemCount: totalNumberOfSquare,
                   physics: const NeverScrollableScrollPhysics(),
@@ -60,8 +85,9 @@ class _HomePageState extends State<HomePage> {
           ),
           Expanded(
             child: Container(
-              child: const Center(
-                child: PlayButton(buttonText: 'PLAY'),
+              child: Center(
+                child:
+                    TextButton(onPressed: startGame, child: const Text('PLAY')),
               ),
             ),
           ),
@@ -72,5 +98,77 @@ class _HomePageState extends State<HomePage> {
         //play button
       ),
     );
+  }
+
+  void startGame() {
+    Timer.periodic(const Duration(milliseconds: 200), (timer) {
+      setState(() {
+        //move physics
+        moveSnake();
+      });
+    });
+  }
+
+  void moveSnake() {
+    switch (currentDirection) {
+      case SnakeDirection.DOWN:
+        {
+          //add head
+          if (snakePosition.last + rowSize > totalNumberOfSquare) {
+            snakePosition
+                .add(snakePosition.last + rowSize - totalNumberOfSquare);
+          } else {
+            snakePosition.add(snakePosition.last + rowSize);
+          }
+        }
+
+        break;
+      case SnakeDirection.UP:
+        {
+          //add head
+          if (snakePosition.last < rowSize) {
+            snakePosition
+                .add(snakePosition.last - rowSize + totalNumberOfSquare);
+          } else {
+            snakePosition.add(snakePosition.last - rowSize);
+          }
+        }
+        break;
+      case SnakeDirection.RIGHT:
+        {
+          //add head
+          // re-position
+          if (snakePosition.last % rowSize == 9) {
+            snakePosition.add(snakePosition.last + 1 - rowSize);
+          } else {
+            snakePosition.add(snakePosition.last + 1);
+          }
+        }
+        break;
+      case SnakeDirection.LEFT:
+        {
+          //add head
+          // re-position
+          if (snakePosition.last % rowSize == 0) {
+            snakePosition.add(snakePosition.last - 1 + rowSize);
+          } else {
+            snakePosition.add(snakePosition.last - 1);
+          }
+        }
+        break;
+      default:
+    }
+    //food physics
+    if (snakePosition.last == foodPosition) {
+      eatFood();
+    } else {
+      snakePosition.removeAt(0);
+    }
+  }
+
+  void eatFood() {
+    while (snakePosition.contains(foodPosition)) {
+      foodPosition = Random().nextInt(totalNumberOfSquare);
+    }
   }
 }
