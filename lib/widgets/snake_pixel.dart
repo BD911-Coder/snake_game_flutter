@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class BlankPixel extends StatelessWidget {
-  const BlankPixel({Key? key}) : super(key: key);
+class SnakePixel extends StatelessWidget {
+  const SnakePixel({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -9,7 +9,7 @@ class BlankPixel extends StatelessWidget {
       padding: const EdgeInsets.all(2.0),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.grey.shade900,
+          color: Colors.white,
           borderRadius: BorderRadius.circular(4.0),
         ),
       ),

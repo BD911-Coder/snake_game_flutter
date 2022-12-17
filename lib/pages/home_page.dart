@@ -14,7 +14,11 @@ class _HomePageState extends State<HomePage> {
   int totalNumberOfSquare = 100;
 
   //snake position
-  
+  List<int> snakePosition = [
+    0,
+    1,
+    2,
+  ];
 
   @override
   Widget build(BuildContext context) {
