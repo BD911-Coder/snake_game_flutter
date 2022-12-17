@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:snake_game/widgets/blank_pixel.dart';
+import 'package:snake_game/widgets/play_button.dart';
 import 'package:snake_game/widgets/food_pixel.dart';
 import 'package:snake_game/widgets/snake_pixel.dart';
 
@@ -59,7 +60,9 @@ class _HomePageState extends State<HomePage> {
           ),
           Expanded(
             child: Container(
-              child: Container(),
+              child: const Center(
+                child: PlayButton(buttonText: 'PLAY'),
+              ),
             ),
           ),
         ],
