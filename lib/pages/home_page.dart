@@ -31,6 +31,9 @@ class _HomePageState extends State<HomePage> {
 
   var currentDirection = SnakeDirection.RIGHT;
 
+  //score
+  int currentScore = 0;
+
   //food
 
   int foodPosition = 55;
@@ -105,6 +108,18 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         //move physics
         moveSnake();
+        if (gameOver()) {
+          timer.cancel();
+          //message display
+          showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: const Text('Game Over!'),
+                  content: Text('Your Score is: $currentScore.toStrong()'),
+                );
+              });
+        }
       });
     });
   }
@@ -167,8 +182,19 @@ class _HomePageState extends State<HomePage> {
   }
 
   void eatFood() {
+    currentScore++;
     while (snakePosition.contains(foodPosition)) {
       foodPosition = Random().nextInt(totalNumberOfSquare);
+    }
+  }
+
+  bool gameOver() {
+    List<int> bodySnake = snakePosition.sublist(0, snakePosition.length - 1);
+
+    if (bodySnake.contains(snakePosition.last)) {
+      return true;
+    } else {
+      return false;
     }
   }
 }
