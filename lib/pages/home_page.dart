@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:snake_game/widgets/blank_pixel.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -8,6 +9,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  //grid builder
+  int rowSize = 10;
+  int totalNumberOfSquare = 100;
+
+  //snake position
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,15 +32,12 @@ class _HomePageState extends State<HomePage> {
             flex: 3,
             child: Container(
               child: GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 10),
+                  itemCount: totalNumberOfSquare,
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: rowSize),
                   itemBuilder: ((context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        color: Colors.pink.shade900,
-                      ),
-                    );
+                    return const BlankPixel();
                   })),
             ),
           ),
